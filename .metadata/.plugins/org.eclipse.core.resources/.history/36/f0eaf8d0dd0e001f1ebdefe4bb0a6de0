@@ -1,0 +1,270 @@
+package application;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+import javafx.application.Application;
+import javafx.beans.binding.StringBinding;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.ComboBox;
+import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+
+public class HelloApplication extends Application {
+	private static TextArea ta = new TextArea();
+	private static int n = 0;
+	private static String[] city;
+	private static int stage[];
+	private static String startCity;
+	private static String endCity;
+	private static int t;
+	private static int numCities;
+	private static MyHashMap<String, MyLinkedList<City>> adjacencyLists = new MyHashMap<>();
+	private static int[][] dp;
+	private static String[][] Citydp;
+
+	// ***********************************************************
+
+	public static void readFile() {
+		FileChooser chooser = new FileChooser();
+		File inputFile = chooser.showOpenDialog(new Stage());
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(inputFile);
+		} catch (FileNotFoundException e) {
+		}
+		numCities = Integer.parseInt(scanner.nextLine());
+		String[] startEnd = scanner.nextLine().split(",");
+		city = new String[numCities];
+		startCity = startEnd[0];
+		endCity = startEnd[1];
+		stage = new int[numCities];
+		stage[0] = 0;
+		// Read the adjacency lists of cities
+		int constant = 0;
+		for (int i = 0; i < numCities - 1; i++) {
+			String[] line = scanner.nextLine().split(", ");
+			String cityName = line[0];
+			MyLinkedList<City> adjacentCities = new MyLinkedList<>();
+			city[i] = cityName;
+			if (i == constant) {
+				t++;
+				for (int count = 0; count < line.length - 1; count++) {
+					stage[++n] = t;
+					constant++;
+				}
+			}
+			for (int j = 1; j < line.length; j++) {
+				String[] cityInfo = line[j].replace("[", "").replace("]", "").split(",");
+				String adjacentCity = cityInfo[0].trim();
+				int petrolCost = Integer.parseInt(cityInfo[1].trim());
+				int hotelCost = Integer.parseInt(cityInfo[2].trim().replace("]", ""));
+				adjacentCities.add(new City(adjacentCity, petrolCost, hotelCost));
+			}
+			adjacencyLists.put(cityName, adjacentCities);
+			city[n] = endCity;
+			stage[n] = t;
+			dp = new int[numCities][numCities];
+			Citydp = new String[numCities][numCities];
+			Citydp[numCities - 1][numCities - 1] = endCity;
+			dp[numCities - 1][numCities - 1] = 0;
+		}
+	}
+	// ***********************************************************
+
+	public static void clear() {
+		city[n] = endCity;
+		stage[n] = t;
+		dp = new int[numCities][numCities];
+		Citydp = new String[numCities][numCities];
+		Citydp[numCities - 1][numCities - 1] = endCity;
+		dp[numCities - 1][numCities - 1] = 0;
+	}
+	// ***********************************************************
+
+	public static void fillTable() {
+	    clear();
+
+	    StringBuilder tableHeader = new StringBuilder();
+	    for (int i = 0; i < stage.length; i++) {
+	        if (i == 0) {
+	            tableHeader.append(String.format("%-15s", stage[i])); // Horizantal Cities
+	        } else {
+	            tableHeader.append(String.format("%-10s", stage[i]) + "    "); // Horizantal Cities
+	        }
+	    }
+
+	    String[] cityRows = new String[city.length];
+	    for (int i = 0; i < city.length; i++) {
+	        cityRows[i] = String.format("%-10s", city[i]); // vertical cities
+	        if (i != 0) {
+	            cityRows[i] += "       ";
+	        }
+	    }
+
+	    cityRows[city.length - 1] += String.format("%-15s", dp[numCities - 1][numCities - 1] + Citydp[numCities - 1][numCities - 1]); // Ending City
+
+	    for (int i = numCities - 2; i >= 0; i--) {
+	        MyLinkedList<City> LI = adjacencyLists.get(city[i]);
+	        for (int j = i + 1; j < numCities; j++) {
+	            if (stage[i] + 1 == stage[numCities - 1]) {
+	                if (stage[i] != stage[j]) {
+	                    dp[i][j] = LI.get(0).getHotelCost() + LI.get(0).getPetrolCost();
+	                    cityRows[i] += String.format(" %-10s", dp[i][j]); // Cities that lead to the Ending City
+	                }
+	            } else {
+	                if (stage[i] + 1 == stage[j]) {
+	                    for (int k = 0; k < LI.size(); k++) {
+	                        dp[i][j] = LI.get(k).getHotelCost() + LI.get(k).getPetrolCost();
+	                        cityRows[i] += String.format(" %-10s", dp[i][j]); // Ways that don't lead to the end
+	                        j++;
+	                    }
+	                    j--;
+	                } else {
+	                    for (int k = j; stage[k] > stage[i]; k--) {
+	                        if (stage[k] != stage[j] && stage[k] + 1 == stage[j]) {
+	                            if (dp[i][j] > 0) {
+	                                if (dp[i][j] > dp[i][k] + dp[k][j]) {
+	                                    Citydp[i][j] = city[k];
+	                                } else if (dp[i][j] == dp[i][k] + dp[k][j]) {
+	                                    Citydp[i][j] = city[k] + "," + Citydp[i][j];
+	                                }
+	                                dp[i][j] = Math.min(dp[i][j], dp[i][k] + dp[k][j]);
+	                            } else {
+	                                dp[i][j] = dp[i][k] + dp[k][j];
+	                                Citydp[i][j] = city[k];
+	                            }
+	                            cityRows[i] += String.format(" %-10s", dp[i][j] + Citydp[i][j]); // No Duplicant but not final solution
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+
+	    tableHeader.append("\n");
+	    for (int i = 0; i < city.length; i++) {
+	        tableHeader.append(cityRows[i]);
+	    }
+
+	    ta.setText(tableHeader.toString());
+	}
+	// ***********************************************************
+
+	public static BorderPane stages() {
+		BorderPane root = new BorderPane();
+		// Title
+		Label title = new Label("Optimal Solution");
+		title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+		HBox titleBox = new HBox(10, title);
+		titleBox.setAlignment(Pos.CENTER);
+		titleBox.setPadding(new Insets(20));
+		root.setTop(titleBox);
+		// Information
+		Label infoLabel = new Label("COST " + startCity + " to " + endCity);
+		infoLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #333333;");
+		HBox infoBox = new HBox(infoLabel);
+		infoBox.setAlignment(Pos.CENTER);
+		infoBox.setPadding(new Insets(20));
+		// Details
+
+		fillAnswer();
+		HBox hb2 = new HBox(10, ta);
+		hb2.setAlignment(Pos.CENTER);
+		hb2.setPadding(new Insets(0, 0, 0, 30));
+		// Know label
+		Label know = new Label("COST " + startCity + " to " + endCity);
+		know.setStyle("-fx-font-size: 16px; -fx-text-fill: #333333;");
+		HBox hb = new HBox(10, know);
+		hb.setAlignment(Pos.CENTER);
+		hb.setPadding(new Insets(0, 0, 0, 50));
+		// VBox for Know and Details
+		VBox vbox = new VBox(10, hb, hb2);
+		vbox.setAlignment(Pos.CENTER);
+		// Apply green background color to the root and vbox
+		root.setStyle("-fx-background-color: #GRAY;");
+		vbox.setStyle("-fx-background-color: #GRAY; -fx-padding: 20px; -fx-border-radius: 10px;");
+		root.setCenter(vbox);
+		return root;
+	}
+	// ***********************************************************
+
+	@Override
+	public void start(Stage primaryStage) {
+		readFile();
+		BorderPane root = new BorderPane();
+		ComboBox<String> combo = new ComboBox<>();
+		combo.getItems().addAll("Table", "Routes");
+		root.setTop(combo);
+		Scene scene = new Scene(root, 800, 650);
+		primaryStage.setFullScreen(false);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		combo.getSelectionModel().select(0);
+		root.setCenter(table());
+		combo.setOnAction(e -> {
+			if (combo.getSelectionModel().getSelectedIndex() == 0) {
+				root.setCenter(table());
+			} else {
+				root.setCenter(stages());
+			}
+		});
+
+	}
+	// ***********************************************************
+
+	public static BorderPane table() {
+		BorderPane root = new BorderPane();
+		fillTable();
+		root.setCenter(ta);
+		return root;
+	}
+	// ***********************************************************
+
+	public static void fillAnswer() {
+		String[] s = Citydp[0][Citydp.length - 1].trim().split(",");
+		for (int h = 0; h < s.length; h++) {
+			String str = s[h] + "," + endCity;
+			for (int j = Citydp.length - 2; j > 0; j--) {
+				if (city[j].equals(s[h])) {
+					if (Citydp[0][j] != null) {
+						String st = str;
+						str = Citydp[0][j] + "," + st;
+						s[h] = Citydp[0][j];
+					}
+				}
+			}
+			String st = str;
+			str = startCity + "," + st;
+			if (h == 0) {
+				ta.setText("The expected result:  ");
+				ta.setText(ta.getText() + str);
+				ta.setText(ta.getText() + "              Cost:" + dp[0][numCities - 1] + "\n" + "\n");
+			} else {
+				ta.setText(ta.getText() + "The alternatives result_" + h + ":  ");
+				ta.setText(ta.getText() + str);
+				ta.setText(ta.getText() + "              Cost:" + dp[0][numCities - 1] + "\n" + "\n");
+
+			}
+		}
+	}
+	// ***********************************************************
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+}
