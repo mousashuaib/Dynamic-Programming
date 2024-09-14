@@ -40,27 +40,6 @@
         <li><strong>GUI:</strong> JavaFX for creating a user-friendly graphical interface.</li>
     </ul>
 
-    <h2>Input Data Example</h2>
-    <pre>
-14
-Start, End
-Start, [A,22,70], [B,8,80], [C,12,80]
-A, [D,8,50], [E,10,70]
-B, [D, 25, 50], [E,10,70]
-C, [D,13,50], [E,13,70]
-Petrol cost
-Hotel cost
-D, [F,25,50], [G,30,70], [H,18,70], [I, 27,60]
-E, [F,12,50], [G,10,70], [H,8,70], [I, 7,60]
-F, [J,26,50], [K,13,70], [L,15,60]
-G, [J,8,50], [K,10,70], [L,10,60]
-H, [J,20,50], [K,10,70], [L,10,60]
-L, [J,15,50], [K,10,70], [L,7,60]92
-J, [End,10,0]
-K, [End,10,0]
-L, [End,10,0]
-    </pre>
-
     <h2>Performance Considerations</h2>
     <p>
         Analyze and discuss the time complexity of the Dynamic Programming approach used in the project. Be prepared to explain how the algorithm handles different scenarios, including the efficiency and computational cost of solving the minimum cost problem.
