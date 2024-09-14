@@ -10,34 +10,37 @@
 
     <h2>Overview</h2>
     <p>
-        Welcome to the repository for the <strong>Optimal Strategy for Minimum Cost from City1 to City2</strong> project. This application is designed to solve the problem of finding the minimum cost route from a starting city to a destination city using Dynamic Programming techniques. The project involves calculating the optimal travel route while considering both the travel costs (e.g., petrol) and accommodation costs (e.g., hotel stays).
+        Welcome to the repository for the <strong>Optimal Strategy for Minimum Cost from City1 to City2</strong> project. This application is designed to find the minimum cost path from a starting city to a destination city using Dynamic Programming techniques. The project involves calculating the most cost-effective route considering travel distances, petrol costs, and hotel costs.
     </p>
 
-    <h2>Project Definition</h2>
-    <p>
-        The goal of this project is to develop a program that determines the most cost-effective route from a starting city (city1) to a destination city (city2) considering:
-    </p>
+    <h2>Features</h2>
+    <h3>Input Data</h3>
     <ul>
-        <li><strong>Number of Stopovers:</strong> There are multiple stopovers between the start and end cities, each with various options for towns and hotels.</li>
-        <li><strong>Travel Costs:</strong> Each trip segment between cities has a different petrol cost.</li>
-        <li><strong>Hotel Costs:</strong> Different hotels in each city have varying costs.</li>
-        <li><strong>Objective:</strong> Select the route and hotel in the destination city to minimize the overall trip cost.</li>
+        <li><strong>Number of Cities:</strong> Total number of cities involved in the problem.</li>
+        <li><strong>Start and End Cities:</strong> Specify the starting and ending cities for the journey.</li>
+        <li><strong>Adjacent Cities:</strong> List of cities adjacent to each other, including travel distances and costs.</li>
+        <li><strong>Petrol Cost:</strong> The cost of petrol required to travel between cities.</li>
+        <li><strong>Hotel Cost:</strong> The cost of staying at hotels in each city.</li>
     </ul>
 
-    <h2>Input Data Format</h2>
-    <p>
-        The input data for the project will be read from a file with the following format:
-    </p>
+    <h3>Output</h3>
     <ul>
-        <li><strong>Number of Cities:</strong> The total number of cities.</li>
-        <li><strong>Start City, End City:</strong> The starting and ending cities for the trip.</li>
-        <li><strong>List of Adjacent Cities:</strong> Details of cities adjacent to each other, including travel distance and cost.</li>
-        <li><strong>Petrol Cost:</strong> Cost associated with traveling between cities.</li>
-        <li><strong>Hotel Cost:</strong> Cost of staying in different hotels in each city.</li>
+        <li><strong>Optimal Path:</strong> The most cost-effective route from the start city to the end city.</li>
+        <li><strong>Minimum Cost:</strong> The total cost for the optimal path.</li>
+        <li><strong>Alternative Solutions:</strong> Additional feasible paths with their respective costs.</li>
+        <li><strong>Dynamic Programming Table:</strong> The DP table used for calculating the minimum cost and path.</li>
+        <li><strong>User Interface:</strong> A graphical interface to display results and interact with the application.</li>
     </ul>
-    <p>
-        Example:
-    </p>
+
+    <h2>Technical Stack</h2>
+    <ul>
+        <li><strong>Algorithm:</strong> Dynamic Programming for solving the minimum cost path problem.</li>
+        <li><strong>File Handling:</strong> Read and parse input data from a text file.</li>
+        <li><strong>Data Structures:</strong> Use linked lists and other appropriate data structures to manage and compute data efficiently.</li>
+        <li><strong>GUI:</strong> JavaFX for creating a user-friendly graphical interface.</li>
+    </ul>
+
+    <h2>Input Data Example</h2>
     <pre>
 14
 Start, End
@@ -58,29 +61,9 @@ K, [End,10,0]
 L, [End,10,0]
     </pre>
 
-    <h2>Expected Results</h2>
-    <p>
-        The program should output:
-    </p>
-    <ul>
-        <li><strong>Optimal Path:</strong> The most cost-effective route from the start city to the end city.</li>
-        <li><strong>Minimum Cost:</strong> The total cost of traveling along the optimal path.</li>
-        <li><strong>Alternative Solutions:</strong> Other feasible paths with their respective costs.</li>
-        <li><strong>DP Table:</strong> The Dynamic Programming table used to compute the minimum cost and path.</li>
-        <li><strong>User Interface:</strong> A graphical user interface (GUI) to present the results and allow for user interaction.</li>
-    </ul>
-
-    <h2>Technical Specifications</h2>
-    <ul>
-        <li><strong>Algorithm:</strong> Implement the Dynamic Programming technique to solve the minimum cost problem.</li>
-        <li><strong>File Handling:</strong> Read input data from a file and process it to extract necessary information.</li>
-        <li><strong>GUI Implementation:</strong> Develop a user-friendly interface to display results and interact with the application.</li>
-        <li><strong>Data Structures:</strong> Utilize appropriate data structures to manage and compute the data efficiently.</li>
-    </ul>
-
     <h2>Performance Considerations</h2>
     <p>
-        Ensure to analyze and discuss the time complexity of the Dynamic Programming approach used in the project. Be prepared to explain how the algorithm handles different scenarios and the efficiency of the solution.
+        Analyze and discuss the time complexity of the Dynamic Programming approach used in the project. Be prepared to explain how the algorithm handles different scenarios, including the efficiency and computational cost of solving the minimum cost problem.
     </p>
 </body>
 </html>
